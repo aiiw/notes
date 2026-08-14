@@ -60,7 +60,7 @@ pre:hover .copy-btn{opacity:1}
   <span class="header-title">自动点模规则说明</span>
   <div class="header-actions">
     <button class="icon-btn" onclick="toggleSearch()" title="搜索">🔍</button>
-    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="切换主题">🌙</button>
+    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="切换主题">☀️</button>
   </div>
 </header>
 <div class="search-box" id="searchBox">
@@ -72,13 +72,13 @@ pre:hover .copy-btn{opacity:1}
       <h1>自动点模规则说明</h1>
       <div class="meta-row">
         <span>📁 模具业务</span>
-        <span>📅 2026-08-13</span>
+        <span>📅 2026-08-14</span>
         <span class="tag">#模具</span><span class="tag">#SQL</span><span class="tag">#点模</span>
       </div>
     </div>
   </div>
-  <div class="card accordion-card">
-    <div class="accordion-header" onclick="this.parentElement.classList.toggle('collapsed')" aria-expanded="true">
+  <div class="card accordion-card collapsed">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('collapsed')" aria-expanded="false">
       <span class="accordion-num">01</span>
       <span class="accordion-title">一、自动点模规则概述</span>
       <span class="accordion-arrow">▲</span>
@@ -93,8 +93,8 @@ pre:hover .copy-btn{opacity:1}
 </ol>
     </div>
   </div>
-  <div class="card accordion-card">
-    <div class="accordion-header" onclick="this.parentElement.classList.toggle('collapsed')" aria-expanded="true">
+  <div class="card accordion-card collapsed">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('collapsed')" aria-expanded="false">
       <span class="accordion-num">02</span>
       <span class="accordion-title">二、关键 SQL 脚本</span>
       <span class="accordion-arrow">▲</span>
@@ -112,8 +112,8 @@ WHERE create_time &gt;= @start_time
 GROUP BY mold_code;</code></pre>
     </div>
   </div>
-  <div class="card accordion-card">
-    <div class="accordion-header" onclick="this.parentElement.classList.toggle('collapsed')" aria-expanded="true">
+  <div class="card accordion-card collapsed">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('collapsed')" aria-expanded="false">
       <span class="accordion-num">03</span>
       <span class="accordion-title">三、注意事项</span>
       <span class="accordion-arrow">▲</span>
@@ -155,14 +155,12 @@ GROUP BY mold_code;</code></pre>
 <script>
 (function(){
   var html=document.documentElement;
-  var saved=localStorage.getItem('h5note-theme')||'dark';
-  html.setAttribute('data-theme',saved);
-  document.getElementById('themeBtn').textContent=saved==='dark'?'☀️':'🌙';
+  html.setAttribute('data-theme','dark');
+  document.getElementById('themeBtn').textContent='☀️';
   window.toggleTheme=function(){
     var cur=html.getAttribute('data-theme');
     var next=cur==='dark'?'light':'dark';
     html.setAttribute('data-theme',next);
-    localStorage.setItem('h5note-theme',next);
     document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
   };
   window.toggleSearch=function(){
@@ -174,7 +172,7 @@ GROUP BY mold_code;</code></pre>
   window.doSearch=function(){
     var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
     document.querySelectorAll('.accordion-card').forEach(function(card){
-      if(!q){card.style.display='';card.classList.remove('collapsed');return;}
+      if(!q){card.style.display='';card.classList.add('collapsed');return;}
       card.style.display=card.textContent.toLowerCase().indexOf(q)>=0?'':'none';
       if(card.style.display!=='none')card.classList.remove('collapsed');
     });
