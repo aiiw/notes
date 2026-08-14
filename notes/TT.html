@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1b26">
+<title>TT</title>
+<style>
+:root[data-theme="dark"]{--bg:#1a1b26;--card-bg:#24283b;--text:#c0caf5;--text-secondary:#565f89;--border:#414868;--accent:#7aa2f7;--accent2:#bb9af7;--code-bg:#1f2335;--code-text:#9ece6a;--comment:#565f89;--header-bg:rgba(36,40,59,0.95);--mark-bg:rgba(187,154,247,0.35);--warning-border:#f7768e;--warning-bg:rgba(247,118,142,0.1);--tip-border:#9ece6a;--tip-bg:rgba(158,206,106,0.1);--info-border:#7aa2f7;--info-bg:rgba(122,162,247,0.1);--badge-bg:#7aa2f7;--badge-text:#1a1b26;--shadow:0 2px 8px rgba(0,0,0,0.3)}
+:root[data-theme="light"]{--bg:#f8fafc;--card-bg:#ffffff;--text:#1e293b;--text-secondary:#64748b;--border:#e2e8f0;--accent:#2563eb;--accent2:#7c3aed;--code-bg:#f1f5f9;--code-text:#059669;--comment:#94a3b8;--header-bg:rgba(255,255,255,0.95);--mark-bg:rgba(124,58,237,0.2);--warning-border:#dc2626;--warning-bg:rgba(220,38,38,0.08);--tip-border:#059669;--tip-bg:rgba(5,150,105,0.08);--info-border:#2563eb;--info-bg:rgba(37,99,235,0.08);--badge-bg:#2563eb;--badge-text:#ffffff;--shadow:0 2px 8px rgba(0,0,0,0.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.7;background:var(--bg);color:var(--text);transition:background .3s,color .3s;padding-top:56px;-webkit-tap-highlight-color:transparent}
+.header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:56px;background:var(--header-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:100}
+.header h1{font-size:17px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-actions{display:flex;gap:8px;flex-shrink:0}
+.header-btn{width:36px;height:36px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);border-radius:8px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.header-btn:active{transform:scale(0.92)}
+.search-box{position:fixed;top:56px;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--header-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 14px;z-index:99;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}
+.search-box.active{max-height:60px;padding:10px 14px}
+.search-input{width:100%;height:38px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:8px;padding:0 14px;font-size:14px;outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--text-secondary)}
+.search-input:focus{border-color:var(--accent)}
+.container{max-width:480px;margin:0 auto;padding:14px}
+.intro-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:13.5px;color:var(--text-secondary);line-height:1.6}
+.accordion{display:flex;flex-direction:column;gap:10px}
+.accordion-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.accordion-item.active{border-color:var(--accent)}
+.accordion-header{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.badge{width:28px;height:28px;border-radius:50%;background:var(--badge-bg);color:var(--badge-text);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.accordion-title{flex:1;font-size:15px;font-weight:600;color:var(--text)}
+.accordion-icon{color:var(--text-secondary);font-size:11px;transition:transform .3s;flex-shrink:0}
+.accordion-item.active .accordion-icon{transform:rotate(180deg)}
+.accordion-content{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.accordion-item.active .accordion-content{max-height:20000px}
+.accordion-inner{padding:0 14px 14px 14px}
+.accordion-inner p{margin:8px 0;color:var(--text);font-size:14px}
+.subheading{font-size:15.5px;font-weight:700;color:var(--accent);margin:16px 0 6px 0;padding-top:6px;border-top:1px solid var(--border)}
+.accordion-inner .subheading:first-child{border-top:none;margin-top:4px}
+.code-block{position:relative;margin:10px 0;background:var(--code-bg);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.code-block pre{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px 14px;margin:0}
+.code-block code{font-family:"SF Mono","Cascadia Code","Fira Code","Consolas",monospace;font-size:13px;line-height:1.5;color:var(--code-text);white-space:pre}
+.copy-btn{position:absolute;top:6px;right:6px;background:var(--card-bg);border:1px solid var(--border);color:var(--text-secondary);padding:3px 10px;border-radius:6px;font-size:12px;cursor:pointer;opacity:0;transition:opacity .2s;z-index:5}
+.code-block:active .copy-btn,.code-block:hover .copy-btn{opacity:1}
+.copy-btn.copied{color:var(--tip-border);border-color:var(--tip-border)}
+.inline-code{font-family:"SF Mono","Cascadia Code","Fira Code","Consolas",monospace;font-size:13px;background:var(--code-bg);color:var(--code-text);padding:1px 5px;border-radius:4px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:100%}
+thead{background:var(--code-bg)}
+th{padding:8px 12px;text-align:left;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:8px 12px;color:var(--text);border-bottom:1px solid var(--border)}
+tbody tr:last-child td{border-bottom:none}
+.callout{margin:10px 0;padding:10px 14px;border-radius:8px;border-left:3px solid;font-size:14px}
+.callout-tip{border-color:var(--tip-border);background:var(--tip-bg)}
+.callout-warning{border-color:var(--warning-border);background:var(--warning-bg)}
+.callout-info{border-color:var(--info-border);background:var(--info-bg)}
+.callout p{margin:4px 0}
+.callout strong{color:var(--accent)}
+.callout-warning strong{color:var(--warning-border)}
+.callout-tip strong{color:var(--tip-border)}
+.callout .code-block{margin:6px 0}
+.callout .subheading{border-top:none}
+.accordion-inner ul,.accordion-inner ol{padding-left:20px;margin:6px 0}
+.accordion-inner li{margin:4px 0;color:var(--text);font-size:14px}
+.accordion-inner a{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--accent)}
+.accordion-inner a:hover{text-decoration:none;border-bottom-style:solid}
+mark.search-highlight{background:var(--mark-bg);color:inherit;border-radius:2px;padding:0 1px}
+.accordion-item.hidden{display:none}
+.no-results{text-align:center;padding:40px 20px;color:var(--text-secondary);font-size:14px;display:none}
+.back-to-top{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--badge-text);border:none;font-size:20px;cursor:pointer;z-index:50;opacity:0;pointer-events:none;transition:opacity .3s,transform .2s;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}
+.back-to-top.visible{opacity:1;pointer-events:auto}
+.back-to-top:active{transform:scale(0.88)}
+.footer{max-width:480px;margin:20px auto 30px auto;padding:0 14px}
+.footer-section{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.footer-section h3{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.footer-section ul{list-style:none;padding:0}
+.footer-section li{font-size:13px;color:var(--text-secondary);margin:4px 0;line-height:1.5}
+</style>
+</head>
+<body>
+<header class="header">
+  <h1>TT</h1>
+  <div class="header-actions">
+    <button class="header-btn" id="search-toggle" onclick="toggleSearch()">🔍</button>
+    <button class="header-btn" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+  </div>
+</header>
+<div class="search-box" id="search-box">
+  <input type="text" class="search-input" id="search-input" placeholder="搜索章节内容..." oninput="performSearch(this.value)">
+</div>
+<main class="container">
+  <div class="intro-card"><p><p>WITH MoldTestRecord
+AS
+(
+SELECT
+       tmmuj.mold_no
+      ,tbm.prdt_no
+      ,tmmuj.sheet_date
+      ,ISNULL(tbel.eqm_line_short, tbel.eqm_line_name) AS eqm_line_name
+      ,tmmuj.line_no
+      ,TMAUJ.width
+      ,tmmuj.mc_speed
+      ,tmmuj.out_length
+      ,TMAUJ.length
+      ,TMAUJ.hge_sta
+      ,tmmuj.up_time
+      ,tmmuj.down_time
+      ,tmmuj.jy_com_qty
+      ,CASE
+           WHEN tmmuj.sj_qualified = &#39;1&#39;
+      --AND ISNULL(tmmuj.jy_com_qty, 0) = 0 
+      THEN     &#39;1&#39;
+           ELSE &#39;0&#39;
+       END sj_qualified
+      ,TMAUJ.Reason
+      ,tbel.org_no
+  FROM dbo.tb_mes_mold_use_jz AS tmmuj WITH (NOLOCK)
+       --INNER JOIN dbo.tb_mes_alrod_use_jz AS TMAUJ WITH (NOLOCK) ON TMAUJ.sheet_no2 = tmmuj.sheet_no
+       OUTER APPLY
+  (
+      SELECT TOP 1
+             TMAUJ2.width
+            ,TMAUJ2.length
+            ,TMAUJ2.hge_sta
+            ,TMAUJ2.Reason
+        FROM dbo.tb_mes_alrod_use_jz AS TMAUJ2 WITH (NOLOCK)
+       WHERE TMAUJ2.sheet_no2 = tmmuj.sheet_no
+       ORDER BY TMAUJ2.RecID DESC
+  ) AS TMAUJ
+       LEFT JOIN zgMes.dbo.tb_bas_mold AS tbm WITH (NOLOCK) ON tbm.mold_no = tmmuj.mold_no
+       LEFT JOIN zgDmp.dbo.tb_bas_eqm_line AS tbel WITH (NOLOCK) ON tmmuj.line_no = tbel.eqm_line_no
+ WHERE tmmuj.sheet_date &gt;= &#39;2026-01-01 00:00:00&#39;
+       --AND tmmuj.sheet_date&lt;=&#39;2026-05-31 00:00:00&#39;
+       --AND tbm.org_no = &#39;003&#39;
+       AND tbm.status &lt;&gt; &#39;300&#39;
+       AND
+       (
+           tmmuj.is_test IS NULL
+           OR tmmuj.is_test = 0
+       )
+UNION ALL
+SELECT
+       VMMUZ.mold_no
+      ,VMMUZ.prdt_no
+      ,VMMUZ.sheet_date
+      ,ISNULL(TBEL.eqm_line_short, TBEL.eqm_line_name) AS eqm_line_name
+      ,VMMUZ.line_no
+      ,VMMUZ.width
+      ,VMMUZ.mc_speed
+      ,VMMUZ.out_length
+      ,VMMUZ.length
+      ,VMMUZ.hge_sta
+      ,VMMUZ.up_time
+      ,VMMUZ.down_time
+      ,VMMUZ.good_qty
+      ,CASE
+           WHEN VMMUZ.sj_qualified = &#39;1&#39; THEN &#39;1&#39;
+           ELSE &#39;0&#39;
+       END AS sj_qualified
+      ,VMMUZ.Reason
+      ,&#39;003&#39; AS org_no
+  FROM dbo.v_mes_mold_use_zg AS VMMUZ
+       INNER JOIN dbo.tb_bas_mold AS TBM WITH (NOLOCK) ON TBM.mold_no = VMMUZ.mold_no
+       LEFT JOIN zgDmp.dbo.tb_bas_eqm_line AS TBEL WITH (NOLOCK) ON TBEL.eqm_line_no = VMMUZ.line_no
+ WHERE 1 = 1 
+       --AND VMMUZ.org_no = &#39;003&#39;
+       AND TBM.status &lt;&gt; &#39;300&#39;
+       AND
+       (
+           VMMUZ.is_test IS NULL
+           OR VMMUZ.is_test = 0
+       )
+       AND VMMUZ.sheet_date &gt;= &#39;2026-01-01&#39;
+/*
+SELECT
+       t1.mold_no
+      ,t1.prdt_no
+      ,t1.sheet_date
+      ,tbel.eqm_line_name
+      ,t1.line_no
+      ,t3.good_qty
+      ,CASE
+           WHEN t2.Reason &lt;&gt; &#39;1&#39;
+                AND ISNULL(t3.good_qty, 0) = 0 THEN &#39;1&#39;
+           ELSE &#39;0&#39;
+       END sj_qualified
+  FROM tb_mes_mold_use AS t1
+       INNER JOIN tb_mes_alrod_use AS t2 ON t1.sheet_no = t2.sheet_no
+       LEFT JOIN dbo.tb_mes_dispath t3 ON t1.pg_no = t3.sheet_no
+       LEFT JOIN zgDmp.dbo.tb_bas_eqm_line AS tbel WITH (NOLOCK) ON t1.line_no = tbel.eqm_line_no
+       LEFT JOIN zgMes.dbo.tb_bas_mold AS tbm2 WITH (NOLOCK) ON t1.mold_no = tbm2.mold_no
+ WHERE t1.sheet_date &gt;= &#39;2026-01-01 00:00:00&#39;
+       --AND t1.sheet_date&lt;=&#39;2026-05-31 00:00:00&#39;
+       AND tbm2.org_no = &#39;003&#39;
+       AND tbm2.status &lt;&gt; &#39;300&#39;
+       <em>/
+)
+    ,Mold_RN
+AS
+(
+-- 给每个模具的记录按时间从新到旧编号
+SELECT
+       a.</em>
+      ,ROW_NUMBER() OVER (PARTITION BY a.mold_no ORDER BY a.sheet_date DESC) AS RN
+  FROM MoldTestRecord a
+)
+    ,mold
+AS
+(
+-- 筛选：最新3次全是不合格的模具
+SELECT
+       Mold_RN.mold_no
+  FROM Mold_RN
+ WHERE RN &lt;= 3
+ GROUP BY Mold_RN.mold_no
+HAVING COUNT(   CASE
+                    WHEN Mold_RN.sj_qualified = &#39;1&#39; THEN 1
+                END
+            ) = 3
+)
+    ,mold_use
+AS
+(
+SELECT
+    -- a.mold_no
+    --,a.prdt_no
+    --,a.sheet_date
+    --,a.eqm_line_name
+    --,a.line_no
+    --,a.width
+    --,a.out_length
+    --,a.mc_speed
+    --,a.hge_sta
+    --,a.sj_qualified
+       a.*
+      ,con_no = SUM(   CASE
+                           WHEN a.sj_qualified = &#39;1&#39; THEN 0
+                           ELSE 1
+                       END
+                   ) OVER (PARTITION BY
+                               a.mold_no
+                               ORDER BY a.sheet_date
+                                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                          )
+  FROM MoldTestRecord a
+ WHERE a.mold_no IN
+       (
+           SELECT mold.mold_no FROM mold
+       )
+)
+    ,continuity_count
+AS
+(
+SELECT
+       mold_use.*
+      ,con_count = COUNT(*) OVER (PARTITION BY mold_use.mold_no, mold_use.con_no)
+  FROM mold_use
+ WHERE mold_use.sj_qualified = &#39;1&#39;
+)
+SELECT
+       &#39;新兴&#39; + CASE
+                  WHEN tbel.line_team = &#39;01&#39; THEN &#39;1组&#39;
+                  WHEN tbel.line_team = &#39;02&#39; THEN &#39;2组&#39;
+                  ELSE &#39;无分组&#39;
+              END AS 组合流水线号
+      ,&#39;&#39; AS 工业材工艺工序
+      ,&#39;&#39; AS 简图
+      --,tbel.eqm_line_name
+      ,TBDD.dict_name AS 断面类型
+      ,a.prdt_no AS 型号
+      ,news.aa AS 本次订单未完成量
+      --m.sn_code as 条形码,</p>
+<div class="code-block"><pre><code>  ,news.sl AS [定尺长度/使用长度]
+  ,bp.show_density AS [米重(kg/m)]
+  ,m.thick1 AS 壁厚
+  ,bp.out_round AS 外接圆
+  ,a.width AS 棒径
+  --,ISNULL(tbel.eqm_line_short, tbel.eqm_line_name) AS 机台
+  ,TBDP.dev_tonnage AS 机台吨位
+  ,maxl.max_len AS 铝棒最大长度
+  ,&#39;&#39; as 使用棒长
+  ,a.out_length AS [出料长度(m)]
+  ,&#39;&#39; AS 头尾夹心缩尾长度
+  ,tbsms.numk AS 现有模具套数
+  ,m.how_many AS 模孔
+  ,tbsms.numk AS 排产至今上机次数
+ -- ,a.up_time AS 上机时间
+  --,dbo.uf_get_mold_down_reason(a.mold_no) AS 卸模原因
+  --,dbo.uf_get_mold_down_time(a.mold_no) AS 卸模时间
+  --,down.dict_name AS 卸模原因
+  --,down.down_time AS 卸模时间
+  --,TBDD2.dict_name AS 卸模原因
+  ,ISNULL(a.down_time, pot.create_time) AS 卸模时间
+  ,&#39;&#39; AS 上次出材突破压力
+  ,dbo.uf_get_mold_jyb(a.mold_no, a.prdt_no) AS 挤压比
+  ,a.mc_speed AS 出材主缸速度
+  ,m.designer AS 设计师
+  ,&#39;&#39; AS 图纸审核人
+  ,repair.emp_name AS 修模工,&#39;&#39;,&#39;&#39;
+  ,m.ord_date AS 订模时间
+  ,bp.alloy_no + &#39;-&#39; + bp.alloy_sta AS 合金状态
+  ,&#39;&#39; AS 淬火方式
+  ,CASE
+       WHEN a.hge_sta = &#39;0&#39; THEN &#39;未均质&#39;
+       ELSE &#39;已均质&#39;
+   END AS 是否均质
+  ,CASE
+       WHEN a.org_no = &#39;003&#39; THEN &#39;新兴基地&#39;
+       ELSE &#39;三水基地&#39;
+   END AS 生产基地,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;&#39;
+   ,a.mold_no AS 模具编号
+   ,TBDD2.dict_name AS 卸模原因,TBDD3.dict_name AS &#39;状态&#39;
+</code></pre></div>
+<p>  -- a.sheet_date,</p>
+<p>  --news.aa AS &#39;未完成量&#39;,
+  --a.sj_qualified,
+  --a.con_no,
+  --a.con_count as &#39;连续上机次数&#39;,
+  --bp.product_type as &#39;产品类型&#39;,pv.param_value 
+  FROM continuity_count a
+       LEFT JOIN tb_bas_mold m WITH (NOLOCK) ON a.mold_no = m.mold_no
+       LEFT JOIN zgDmp.dbo.tb_bas_eqm_line AS tbel WITH (NOLOCK) ON m.work_dev = tbel.eqm_line_no
+       LEFT JOIN zgDmp.dbo.tb_bas_product bp WITH (NOLOCK) ON m.prdt_no = bp.prdt_no
+       LEFT JOIN zgDmp.dbo.tb_bas_dict_detial AS TBDD WITH (NOLOCK) ON bp.prdt_type = TBDD.dict_no
+       --LEFT JOIN zgDmp.dbo.tb_bas_dev_params_value pv WITH (NOLOCK) ON tbel.dev_no = pv.dev_no
+       --                                                                AND pv.param_name = &#39;棒径&#39;
+       LEFT JOIN dbo.tb_bas_dev_params AS TBDP WITH (NOLOCK) ON TBDP.line_no = a.line_no
+       LEFT JOIN
+       (
+           SELECT
+                  tmp.prdt_no
+                 ,SUM(TBP.show_density * (tmd.sheet_qty - tmd.record_qty) * tmp.press_length) / 1000000 AS aa
+                 ,(MAX(tmp.sheet_length) / 1000 + &#39;-&#39; + MIN(tmp.sheet_length) / 1000) AS sl
+             FROM zgMes.dbo.tb_mes_dispath AS tmd WITH (NOLOCK)
+                  INNER JOIN zgMes.dbo.tb_mes_pro AS tmp WITH (NOLOCK) ON tmd.pro_no = tmp.sheet_no
+                  LEFT JOIN zgDmp.dbo.tb_bas_product AS TBP WITH (NOLOCK) ON TBP.prdt_no = tmp.prdt_no
+            WHERE tmd.station_no = &#39;JY&#39;
+                  AND tmd.work_sta IN (&#39;0&#39;, &#39;1&#39;)
+            GROUP BY tmp.prdt_no
+       --ORDER BY tmp.prdt_no,aa
+       ) news ON m.prdt_no = news.prdt_no
+       LEFT JOIN
+       (
+           SELECT
+                  COUNT(1) AS numk
+                 ,TBMs.prdt_no
+             FROM dbo.tb_bas_mold AS TBMs WITH (NOLOCK)
+            WHERE TBMs.mold_type NOT LIKE &#39;%垫%&#39;
+            GROUP BY TBMs.prdt_no
+       ) AS tbsms ON tbsms.prdt_no = m.prdt_no
+       --     OUTER APPLY
+       --(
+       --    SELECT TOP 1
+       --           mtr.Reason
+       --          ,TBDD2.dict_name
+       --          ,mtr.down_time
+       --      FROM MoldTestRecord AS mtr
+       --           LEFT JOIN zgDmp.dbo.tb_bas_dict_detial AS TBDD2 WITH (NOLOCK) ON TBDD2.dict_no = mtr.Reason
+       --                                                                            AND TBDD2.dict_type = &#39;挤压换模原因&#39;
+       --     WHERE mtr.mold_no = a.mold_no
+       --     ORDER BY mtr.sheet_date DESC
+       --) AS down
+       LEFT JOIN zgDmp.dbo.tb_bas_dict_detial AS TBDD2 WITH (NOLOCK) ON TBDD2.dict_no = a.Reason
+                                                                        AND TBDD2.dict_type = &#39;挤压换模原因&#39;
+        LEFT JOIN zgDmp.dbo.tb_bas_dict_detial AS TBDD3 WITH (NOLOCK) ON TBDD3.dict_no = m.status
+                                                                        AND TBDD3.dict_type = &#39;模具库存状态&#39;
+       OUTER APPLY
+  (
+      SELECT
+             MAX(mtr.length) AS max_len
+        FROM MoldTestRecord AS mtr
+       WHERE mtr.mold_no = a.mold_no
+  ) AS maxl
+       OUTER APPLY
+  (
+      SELECT TOP 1
+             THE.emp_name
+        FROM dbo.tb_mold_repair_todev AS TMRT WITH (NOLOCK)
+             INNER JOIN zgDmp.dbo.tb_hr_employee AS THE WITH (NOLOCK) ON THE.emp_no = TMRT.repair_userno
+       WHERE TMRT.jt_id = m.work_dev
+  ) AS repair
+       OUTER APPLY
+  (
+      SELECT TOP 1
+             TMFPM.create_time
+        FROM dbo.tb_mold_flow_pot_mold AS TMFPM WITH (NOLOCK)
+       WHERE TMFPM.mold_no = a.mold_no
+             AND TMFPM.sheet_sta = &#39;1&#39;
+             AND TMFPM.create_time &gt; a.up_time
+       ORDER BY TMFPM.create_time
+  ) AS pot
+ WHERE a.con_count &gt;= 3 -- 连续3次及以上
+       AND tbel.line_team in (&#39;01&#39;,&#39;02&#39;)
+       AND EXISTS
+ (
+     SELECT
+            1
+       FROM zgMes.dbo.tb_mes_dispath AS tmd WITH (NOLOCK)
+            INNER JOIN zgMes.dbo.tb_mes_pro AS tmp WITH (NOLOCK) ON tmd.pro_no = tmp.sheet_no
+      WHERE tmd.station_no = &#39;JY&#39;
+            AND tmd.work_sta IN (&#39;0&#39;, &#39;1&#39;)
+            AND a.prdt_no = tmp.prdt_no
+ )<br> --and m.status in (&#39;70&#39;,&#39;203&#39;,&#39;414&#39;)
+ --AND a.prdt_no = &#39;&#39;
+ ORDER BY a.mold_no
+         ,a.sheet_date DESC;</p>
+<p>--SELECT TOP 100 * FROM dbo.tb_mes_mold_use AS tmmu
+--WHERE tmmu.mold_no=&#39;599431&#39;</p>
+<p>--SELECT 1 FROM zgMes.dbo.tb_mes_dispath AS tmd
+--INNER JOIN zgMes.dbo.tb_mes_pro AS tmp WITH (NOLOCK) ON tmd.pro_no=tmp.sheet_no
+--WHERE tmd.station_no=&#39;JY&#39;
+--AND tmd.work_sta IN (&#39;0&#39;,&#39;1&#39;)</p>
+</p></div>
+</main>
+<div class="footer">
+  <div class="footer-section">
+    <h3>📋 笔记信息</h3>
+    <ul>
+      <li>📁 分类：SQL技术</li>
+      <li>📅 创建：2026/8/14</li>
+      
+      <li>📝 由 <a href="https://aiiw.github.io/smartnotes/" style="color:var(--accent)">SmartNotes</a> 生成</li>
+    </ul>
+  </div>
+</div>
+<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+(function(){
+  var html=document.documentElement;
+  html.setAttribute('data-theme','dark');
+  var themeBtn=document.getElementById('theme-toggle');
+  themeBtn.textContent='☀️';
+  window.toggleTheme=function(){
+    var cur=html.getAttribute('data-theme');
+    var next=cur==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    themeBtn.textContent=next==='dark'?'☀️':'🌙';
+    try{localStorage.setItem('h5note-theme',next)}catch(e){}
+  };
+  window.toggleSearch=function(){
+    var sb=document.getElementById('search-box');
+    sb.classList.toggle('active');
+    var inp=document.getElementById('search-input');
+    if(sb.classList.contains('active')){inp.focus();inp.value='';performSearch('')}
+  };
+  window.toggleAccordion=function(header){
+    header.parentElement.classList.toggle('active');
+  };
+  window.performSearch=function(q){
+    q=(q||'').toLowerCase().trim();
+    var items=document.querySelectorAll('.accordion-item');
+    var found=0;
+    items.forEach(function(item){
+      if(!q){item.classList.remove('hidden');item.classList.add('active');found++;return;}
+      var text=item.textContent.toLowerCase();
+      if(text.indexOf(q)>=0){item.classList.remove('hidden');item.classList.add('active');found++}
+      else{item.classList.add('hidden');item.classList.remove('active')}
+    });
+    var nr=document.getElementById('no-results');
+    if(!nr){
+      nr=document.createElement('div');nr.className='no-results';nr.id='no-results';
+      nr.textContent='没有匹配的章节';
+      document.querySelector('.container').appendChild(nr);
+    }
+    nr.style.display=q&&found===0?'block':'none';
+    // Highlight
+    document.querySelectorAll('mark.search-highlight').forEach(function(m){var p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});
+    if(q&&found>0){
+      document.querySelectorAll('.accordion-inner p,.accordion-inner li,.subheading,.accordion-title').forEach(function(el){
+        if(el.querySelector('mark'))return;
+        var txt=el.textContent;var idx=txt.toLowerCase().indexOf(q);
+        if(idx>=0){
+          var range=document.createRange();var walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false);
+          var node,offset=0;
+          while(node=walker.nextNode()){if(offset+node.length>idx){range.setStart(node,idx-offset);range.setEnd(node,idx-offset+q.length);break}offset+=node.length}
+          try{var mark=document.createElement('mark');mark.className='search-highlight';range.surroundContents(mark)}catch(e){}
+        }
+      });
+    }
+  };
+  // Copy buttons
+  document.querySelectorAll('.code-block').forEach(function(block){
+    var btn=document.createElement('button');
+    btn.className='copy-btn';btn.textContent='复制';
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var code=block.querySelector('code');
+      var text=code?code.textContent:block.textContent;
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent='已复制';btn.classList.add('copied');
+        setTimeout(function(){btn.textContent='复制';btn.classList.remove('copied')},2000);
+      }).catch(function(){
+        var ta=document.createElement('textarea');ta.value=text;
+        document.body.appendChild(ta);ta.select();document.execCommand('copy');
+        document.body.removeChild(ta);btn.textContent='已复制';btn.classList.add('copied');
+        setTimeout(function(){btn.textContent='复制';btn.classList.remove('copied')},2000);
+      });
+    });
+    block.appendChild(btn);
+  });
+  // Back to top
+  var btt=document.getElementById('back-to-top');
+  window.addEventListener('scroll',function(){
+    if(window.scrollY>300)btt.classList.add('visible');else btt.classList.remove('visible')
+  });
+  // Keyboard shortcut
+  document.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();toggleSearch()}
+  });
+})();
+</script>
+</body>
+</html>
