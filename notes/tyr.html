@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="description" content="tyr - ">
+<meta name="theme-color" content="#16162a">
+<title>tyr</title>
+<style>
+:root{--font-sans:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;--font-mono:'Cascadia Code','Fira Code','Consolas',monospace;--radius-sm:8px;--radius:12px}
+:root[data-theme="dark"]{--bg:#16162a;--bg-card:#252538;--bg-code:#1e1e2e;--bg-header:#2d2d3a;--text:#e8e8e8;--text2:#a0a0b0;--text3:#6c6c80;--accent:#6b8cff;--accent2:rgba(107,140,255,0.12);--code:#a8e063;--border:#3a3a50;--shadow:0 2px 8px rgba(0,0,0,0.3)}
+:root[data-theme="light"]{--bg:#f5f6fa;--bg-card:#fff;--bg-code:#f0f2f5;--bg-header:#fff;--text:#2c3e50;--text2:#5a6a7e;--text3:#94a3b8;--accent:#4a6cf7;--accent2:rgba(74,108,247,0.08);--code:#2e7d32;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.header{position:sticky;top:0;z-index:100;background:var(--bg-header);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.header-title{font-size:18px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-actions{display:flex;gap:6px;flex-shrink:0}
+.icon-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.container{max-width:800px;margin:0 auto;padding:16px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.card-body{padding:18px 20px}
+.intro-card .card-body{font-size:14px;color:var(--text2)}
+.intro-card .card-body h1{font-size:22px;color:var(--text);margin-bottom:8px}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;font-size:12px;color:var(--text3)}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;background:var(--accent2);color:var(--accent);font-size:11px;font-weight:500}
+.accordion-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .2s}
+.accordion-header:hover{background:var(--accent2)}
+.accordion-num{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.accordion-title{flex:1;font-size:15px;font-weight:600;color:var(--text)}
+.accordion-arrow{font-size:12px;color:var(--accent);transition:transform .3s;flex-shrink:0}
+.accordion-card.collapsed .accordion-arrow{transform:rotate(180deg)}
+.accordion-body{padding:0 18px;max-height:5000px;overflow:hidden;transition:max-height .4s ease,padding .4s ease}
+.accordion-card.collapsed .accordion-body{max-height:0;padding:0 18px}
+.accordion-body .card-body{padding:0 0 18px 0}
+.accordion-body h2,.accordion-body h3{font-size:16px;color:var(--text);margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.accordion-body h4{font-size:14px;color:var(--text);margin:12px 0 6px}
+.accordion-body p{margin-bottom:10px;font-size:14px;line-height:1.7}
+.accordion-body ul,.accordion-body ol{padding-left:20px;margin-bottom:10px}
+.accordion-body li{margin-bottom:4px;font-size:14px}
+.accordion-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.accordion-body th,.accordion-body td{padding:8px 12px;border:1px solid var(--border);text-align:left}
+.accordion-body th{background:var(--accent2);font-weight:600;color:var(--accent)}
+.accordion-body blockquote{border-left:3px solid var(--accent);padding:8px 16px;margin:10px 0;color:var(--text2);background:var(--accent2);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.accordion-body a{color:var(--accent);text-decoration:none}
+.accordion-body a:hover{text-decoration:underline}
+pre{background:var(--bg-code);border-radius:var(--radius-sm);padding:16px;overflow-x:auto;margin:10px 0;position:relative;border:1px solid var(--border);font-size:13px;line-height:1.6}
+pre code{font-family:var(--font-mono);font-size:13px;color:var(--code)}
+code{font-family:var(--font-mono);font-size:13px;background:var(--bg-code);padding:2px 6px;border-radius:4px;color:var(--code)}
+pre code{background:none;padding:0;color:var(--text)}
+.copy-btn{position:absolute;top:8px;right:8px;padding:4px 12px;border:1px solid var(--border);border-radius:4px;background:var(--bg-card);color:var(--text2);font-size:11px;cursor:pointer;opacity:0;transition:opacity .2s;font-family:var(--font-sans)}
+pre:hover .copy-btn{opacity:1}
+.copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+.search-box{position:fixed;top:60px;left:0;right:0;z-index:99;background:var(--bg-header);border-bottom:1px solid var(--border);padding:10px 20px;display:none}
+.search-box.active{display:block}
+.search-box input{width:100%;max-width:800px;margin:0 auto;display:block;padding:10px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text);font-size:14px;outline:none;font-family:var(--font-sans)}
+.search-box input:focus{border-color:var(--accent)}
+.search-box input::placeholder{color:var(--text3)}
+.highlight{background:var(--accent2);border-radius:3px;padding:1px 0}
+@media(max-width:768px){.container{padding:12px}.header{padding:10px 14px}.header-title{font-size:16px}.card-body{padding:14px 16px}.accordion-header{padding:12px 14px}.accordion-title{font-size:14px}pre{font-size:12px;padding:12px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <span class="header-title">tyr</span>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleSearch()" title="搜索">🔍</button>
+    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="切换主题">🌙</button>
+  </div>
+</header>
+<div class="search-box" id="searchBox">
+  <input type="text" id="searchInput" placeholder="搜索内容..." oninput="doSearch()">
+</div>
+<div class="container">
+  <!-- Meta card -->
+  <div class="card intro-card">
+    <div class="card-body">
+      <h1>tyr</h1>
+      <div class="meta-row">
+        <span>📁 未分类</span>
+        <span>📅 2026/8/14</span>
+        
+      </div>
+    </div>
+  </div>
+  <!-- Content sections -->
+  <div class="card intro-card"><div class="card-body"><p>SELECT a.*,
+       b.sheet_sta,
+       CONVERT(VARCHAR(10), a.sign_time) AS sign_date,
+       c.reason,
+       CASE
+           WHEN a.sign_time IS NULL THEN
+               &#39;&#39;
+           ELSE
+               CONCAT(
+                         DATEDIFF(MINUTE, a.sign_time, ISNULL(a.submit_time, GETDATE())) / 60,
+                         &#39;小时&#39;,
+                         RIGHT(&#39;0&#39;
+                               + CAST(DATEDIFF(MINUTE, a.sign_time, ISNULL(a.submit_time, GETDATE())) % 60 AS VARCHAR(2)), 2),
+                         &#39;分钟&#39;
+                     )
+       END AS last_time,
+       DATEDIFF(DAY, a.sign_time, ISNULL(a.submit_time, GETDATE())) AS last_time2,
+       v.wait_jy_num,
+       d.prdt_no,
+       d.dia,
+       d.ur_diameter,
+       CONCAT(&#39;DMP_&#39;, pic.file_id) AS small_file_id,
+       dd.dict_name,
+       CASE
+           WHEN dbo.f_get_eligible_for_application_mold_list(d.prdt_no, e.product_line_list, &#39;003&#39;, &#39;5&#39;) IS NULL THEN
+               &#39;否&#39;
+           ELSE
+               &#39;是&#39;
+       END 当前有模
+FROM tb_mold_return_repair_detail a
+    LEFT JOIN tb_mold_return_repair b
+        ON a.sheet_no = b.sheet_no
+    OUTER APPLY
+(
+    SELECT STRING_AGG(reason, &#39;,&#39;) AS reason
+    FROM tb_mold_reason_list c
+    WHERE c.id IN
+          (
+              SELECT * FROM STRING_SPLIT(a.return_reason, &#39;,&#39;)
+          )
+          AND type = &#39;返修原因&#39;
+) c
+    LEFT JOIN v_mold_wait_jy_num v
+        ON v.mold_no = a.mold_no
+    LEFT JOIN tb_bas_mold d
+        ON a.sn_code = d.sn_code
+    LEFT JOIN zgDmp.dbo.v_dmp_prdt_pic pic
+        ON d.prdt_no = pic.prdt_no
+    LEFT JOIN zgDmp.dbo.tb_bas_dict_detial dd
+        ON d.status = dd.dict_no
+           AND dd.dict_type = &#39;模具库存状态&#39;
+    LEFT JOIN
+    (
+        SELECT t.prdt_no,
+               STRING_AGG(t.product_line, &#39;,&#39;) AS product_line_list
+        FROM
+        (
+            SELECT DISTINCT
+                   b.prdt_no,
+                   a.product_line
+            FROM dbo.tb_mes_dispath a WITH (NOLOCK)
+                LEFT JOIN zgErp.dbo.tb_sal_ord2 b WITH (NOLOCK)
+                    ON a.ord_lot = b.sheet_lot
+                LEFT JOIN zgDmp.dbo.tb_bas_eqm_line AS TBEL WITH (NOLOCK)
+                    ON TBEL.eqm_line_no = a.product_line
+            WHERE a.station_no = &#39;JY&#39;
+                  AND a.work_sta NOT IN ( &#39;2&#39;, &#39;99&#39; )
+        ) t
+        GROUP BY t.prdt_no
+    ) e
+        ON d.prdt_no = e.prdt_no;</p>
+</div></div>
+</div>
+<script>
+(function(){
+  var html=document.documentElement;
+  var saved='dark';
+  html.setAttribute('data-theme',saved);
+  document.getElementById('themeBtn').textContent='☀️';
+  window.toggleTheme=function(){
+    var cur=html.getAttribute('data-theme');
+    var next=cur==='dark'?'light':'dark';
+    html.setAttribute('data-theme',next);
+    localStorage.setItem('h5note-theme',next);
+    document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
+  };
+  window.toggleSearch=function(){
+    document.getElementById('searchBox').classList.toggle('active');
+    var inp=document.getElementById('searchInput');
+    if(document.getElementById('searchBox').classList.contains('active')){inp.focus();inp.value='';}
+    doSearch();
+  };
+  window.doSearch=function(){
+    var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
+    document.querySelectorAll('.accordion-card').forEach(function(card){
+      if(!q){card.style.display='';card.classList.remove('collapsed');return;}
+      var text=card.textContent.toLowerCase();
+      if(text.indexOf(q)>=0){card.style.display='';card.classList.remove('collapsed');}
+      else{card.style.display='none';}
+    });
+  };
+  // Copy buttons
+  document.querySelectorAll('pre').forEach(function(pre){
+    var btn=document.createElement('button');
+    btn.className='copy-btn';btn.textContent='复制';
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var code=pre.querySelector('code');
+      var text=code?code.textContent:pre.textContent;
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent='已复制';setTimeout(function(){btn.textContent='复制';},2000);
+      }).catch(function(){
+        var ta=document.createElement('textarea');ta.value=text;
+        document.body.appendChild(ta);ta.select();document.execCommand('copy');
+        document.body.removeChild(ta);btn.textContent='已复制';
+        setTimeout(function(){btn.textContent='复制';},2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+  // Keyboard shortcut: Ctrl+K for search
+  document.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();toggleSearch();}
+  });
+})();
+</script>
+</body>
+</html>
